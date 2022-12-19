@@ -1,3 +1,1 @@
-#atticus-y-websocket-server
-##atticus
-#:)
+Demo server for y websocket
