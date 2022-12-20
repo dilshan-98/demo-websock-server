@@ -81,10 +81,12 @@ const updateHandler = (update, origin, doc) => {
   encoding.writeVarUint(encoder, messageSync)
   syncProtocol.writeUpdate(encoder, update)
   const message = encoding.toUint8Array(encoder)
-  console.log("Line 84, update: "+update+" doc: "+doc);
-  console.log("Line 85, doc.conns: "+doc.conns);
+  console.log("Line 84, update: "+update+" doc: "+JSON.stringify(doc));
+  const var1 = JSON.stringify(Object.fromEntries(doc.conns));
+  console.log("Line 85, doc.conns: "+var1);
   doc.conns.forEach((_, conn) => {
-    console.log("Line 87, doc.conns.forEach: Con: "+conn+" message: "+message+" doc: "+doc+" whatever the first variable passed is: "+_);
+    const var2 = JSON.stringify(Array.from(_));
+    console.log("Line 87, doc.conns.forEach: Con: "+JSON.stringify(conn)+" message: "+message+" doc: "+JSON.stringify(doc)+" whatever the first variable passed is: "+var2);
     send(doc, conn, message)
   })
 }
@@ -101,7 +103,8 @@ class WSSharedDoc extends Y.Doc {
      * @type {Map<Object, Set<number>>}
      */
     this.conns = new Map()
-    console.log("Line 104, this.conns = new.Map(): "+this.conns);
+    const var3 = JSON.stringify(Object.fromEntries(this.conns));
+    console.log("Line 104, this.conns = new.Map(): "+var3);
     /**
      * @type {awarenessProtocol.Awareness}
      */
@@ -112,7 +115,7 @@ class WSSharedDoc extends Y.Doc {
      * @param {Object | null} conn Origin is the connection that made the change
      */
     const awarenessChangeHandler = ({ added, updated, removed }, conn) => {
-      console.log("Line 115, conn: "+ conn);
+      console.log("Line 115, conn: "+ JSON.stringify(conn));
       const changedClients = added.concat(updated, removed)
       if (conn !== null) {
         const connControlledIDs = /** @type {Set<number>} */ (this.conns.get(conn))
