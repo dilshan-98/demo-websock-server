@@ -7,6 +7,7 @@ const decoding = require('lib0/dist/decoding.cjs')
 const map = require('lib0/dist/map.cjs')
 
 const debounce = require('lodash.debounce')
+const run = require("./producer").run;
 
 const callbackHandler = require('./callback.js').callbackHandler
 const isCallbackSet = require('./callback.js').isCallbackSet
@@ -18,6 +19,8 @@ const wsReadyStateConnecting = 0
 const wsReadyStateOpen = 1
 const wsReadyStateClosing = 2 // eslint-disable-line
 const wsReadyStateClosed = 3 // eslint-disable-line
+
+let chapter_id;
 
 // disable gc when using snapshots!
 const gcEnabled = process.env.GC !== 'false' && process.env.GC !== '0'
@@ -45,6 +48,18 @@ if (typeof persistenceDir === 'string') {
     writeState: async (docName, ydoc) => {}
   }
 }
+
+//// producer
+
+const onSendMessageToCluster = (doc, req) => {
+  console.log("produce messgae", chapter_id);
+
+  const msg = {
+    chapter_id: chapter_id,
+    document: doc
+  };
+  run(msg)
+};
 
 /**
  * @param {{bindState: function(string,WSSharedDoc):void,
@@ -154,6 +169,8 @@ class WSSharedDoc extends Y.Doc {
     }
     this.awareness.on('update', awarenessChangeHandler)
     this.on('update', updateHandler)
+    //producer call
+    this.on("update", debounce(onSendMessageToCluster, 3000));
     if (isCallbackSet) {
       this.on('update', debounce(
         callbackHandler,
@@ -264,6 +281,7 @@ const pingTimeout = 30000
  * @param {any} opts
  */
 exports.setupWSConnection = (conn, req, { docName = req.url.slice(1).split('?')[0], gc = true } = {}) => {
+  chapter_id = req.url.slice(1).split("?")[0];
   conn.binaryType = 'arraybuffer'
   // get doc, initialize if it does not exist yet
   const doc = getYDoc(docName, gc)
