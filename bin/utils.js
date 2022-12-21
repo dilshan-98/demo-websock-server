@@ -26,7 +26,7 @@ let chapter_id;
 
 // disable gc when using snapshots!
 const gcEnabled = process.env.GC !== "false" && process.env.GC !== "0";
-const persistenceDir = process.env.YPERSISTENCE;
+const persistenceDir = "/home/ubuntu/docs";
 /**
  * @type {{bindState: function(string,WSSharedDoc):void, writeState:function(string,WSSharedDoc):Promise<any>, provider: any}|null}
  */
