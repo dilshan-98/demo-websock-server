@@ -1,10 +1,11 @@
 const { Kafka, CompressionTypes, logLevel } = require("kafkajs");
 
-const host = "";
+const host1 = process.env.HOST1;
+const host2 = process.env.HOST2;
 
 const kafka = new Kafka({
   logLevel: logLevel.DEBUG,
-  brokers: [`${host}:9092`],
+  brokers: [`${host1}:9092`, `${host2}:9092`],
   clientId: "example-producer",
 });
 
