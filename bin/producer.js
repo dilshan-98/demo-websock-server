@@ -17,7 +17,7 @@ const sendMessage = (msg) => {
     .send({
       topic,
       compression: CompressionTypes.GZIP,
-      messages: {key: msg.chapter_id, value: msg},
+      messages: [{key: msg.chapter_id, value: JSON.stringify(msg)}],
     })
     .then(console.log)
     .catch((e) => console.error(`[example/producer] ${e.message}`, e));
