@@ -76,17 +76,35 @@ const messageAwareness = 1
  * @param {any} origin
  * @param {WSSharedDoc} doc
  */
+
+//  function simpleStringify (object){
+//   var simpleObject = {};
+//   for (var prop in object ){
+//       if (!object.hasOwnProperty(prop)){
+//           continue;
+//       }
+//       if (typeof(object[prop]) == 'object'){
+//           continue;
+//       }
+//       if (typeof(object[prop]) == 'function'){
+//           continue;
+//       }
+//       simpleObject[prop] = object[prop];
+//   }
+//   return JSON.stringify(simpleObject); // returns cleaned up JSON
+// };
+
 const updateHandler = (update, origin, doc) => {
   const encoder = encoding.createEncoder()
   encoding.writeVarUint(encoder, messageSync)
   syncProtocol.writeUpdate(encoder, update)
   const message = encoding.toUint8Array(encoder)
-  console.log("Line 84, update: "+update+" doc: "+JSON.stringify(doc));
-  const var1 = JSON.stringify(Object.fromEntries(doc.conns));
-  console.log("Line 85, doc.conns: "+var1);
+  //console.log("Line 84, update: "+update+" doc: "+JSON.stringify(doc));
+  //const var1 = JSON.stringify(Object.fromEntries(doc.conns));
+  //console.log("Line 85, doc.conns: "+var1);
   doc.conns.forEach((_, conn) => {
-    const var2 = JSON.stringify(Array.from(_));
-    console.log("Line 87, doc.conns.forEach: Con: "+JSON.stringify(conn)+" message: "+message+" doc: "+JSON.stringify(doc)+" whatever the first variable passed is: "+var2);
+    //const var2 = simpleStringify(_);
+    //console.log("Line 87, doc.conns.forEach: Con: "+JSON.stringify(conn)+" message: "+message+" doc: "+JSON.stringify(doc)+" whatever the first variable passed is: "+var2);
     send(doc, conn, message)
   })
 }
@@ -103,8 +121,8 @@ class WSSharedDoc extends Y.Doc {
      * @type {Map<Object, Set<number>>}
      */
     this.conns = new Map()
-    const var3 = JSON.stringify(Object.fromEntries(this.conns));
-    console.log("Line 104, this.conns = new.Map(): "+var3);
+    //const var3 = simpleStringify(this.conns);
+    //console.log("Line 104, this.conns = new.Map(): "+var3);
     /**
      * @type {awarenessProtocol.Awareness}
      */
@@ -115,7 +133,8 @@ class WSSharedDoc extends Y.Doc {
      * @param {Object | null} conn Origin is the connection that made the change
      */
     const awarenessChangeHandler = ({ added, updated, removed }, conn) => {
-      console.log("Line 115, conn: "+ JSON.stringify(conn));
+      //const var4 = simpleStringify(conn);
+      //console.log("Line 115, conn: "+ var4);
       const changedClients = added.concat(updated, removed)
       if (conn !== null) {
         const connControlledIDs = /** @type {Set<number>} */ (this.conns.get(conn))
